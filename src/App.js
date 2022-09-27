@@ -7,6 +7,10 @@ import jsTPS from './common/jsTPS.js';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import AddSong_Transaction from './transactions/AddSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction.js';
+import RemoveSong_Transaction from './transactions/RemoveSong_Transaction.js';
+
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -230,9 +234,36 @@ class App extends React.Component {
         }
         this.setStateWithUpdatedList(list);
     }
+
+    add = () => {
+
+        let list = this.state.currentList;
+
+        let song = ({title: "Untitled", artist: "Unknown", youTubeId: "dQw4w9WgXcQ"});
+
+        list.songs.push(song);
+
+        this.setStateWithUpdatedList(this.state.currentList);
+
+    }
     // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
     addMoveSongTransaction = (start, end) => {
         let transaction = new MoveSong_Transaction(this, start, end);
+        this.tps.addTransaction(transaction);
+    }
+
+    addAddSongTransaction = () => {
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+    }
+
+    addRemoveSongTransaction = (index, title, artist, youTubeId) => {
+        let transaction = new RemoveSong_Transaction(this, index, title, artist, youTubeId);
+        this.tps.addTransaction(transaction);
+    }
+
+    addEditSongTransaction = (songindex, title, artist, youTubeId, song) => {
+        let transaction = new EditSong_Transaction(this, songindex, title, artist, youTubeId, song);
         this.tps.addTransaction(transaction);
     }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
@@ -263,6 +294,7 @@ class App extends React.Component {
             this.showDeleteListModal();
         });
     }
+
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
     showDeleteListModal() {
@@ -296,10 +328,12 @@ class App extends React.Component {
                     canAddSong={canAddSong}
                     canUndo={canUndo}
                     canRedo={canRedo}
-                    canClose={canClose} 
+                    canClose={canClose}
+                    addCallback={this.add}
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
+                    
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
