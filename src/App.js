@@ -160,17 +160,33 @@ class App extends React.Component {
         }
     }
     deleteMarkedSong = () => {
-        this.delete(this.state.songKeyPairMarkedForDeletion);
+
+        let songid = this.state.songKeyPairMarkedForDeletion;
+        let title = this.state.currentList.songs[songid].title
+        let artist = this.state.currentList.songs[songid].artist;
+        let youTubeId = this.state.currentList.songs[songid].youTubeId;
+        let transaction = new RemoveSong_Transaction(this, songid, title, artist, youTubeId);
+        this.tps.addTransaction(transaction);
         this.hideDeleteSongModal();
     }
 
     editMarkedSong = () => {
 
+        let songid = this.state.songKeyPairMarkedForEditing;
+
+        let oldtitle = this.state.currentList.songs[songid].title;
+        let oldartist = this.state.currentList.songs[songid].artist;
+        let oldyouTubeId = this.state.currentList.songs[songid].youTubeId;
+
+        let song = ({title: oldtitle, artist: oldartist, youTubeId: oldyouTubeId});
+
         let title = document.getElementById("Title").value;
         let artist = document.getElementById("Artist").value;
         let youTubeId = document.getElementById("youTubeId").value;
 
-        this.edit(this.state.songKeyPairMarkedForEditing, title, artist, youTubeId);
+        let transaction = new EditSong_Transaction(this, songid, title, artist, youTubeId, song);
+        this.tps.addTransaction(transaction);
+
         this.hideEditSongModal();
 
     }
@@ -281,6 +297,15 @@ class App extends React.Component {
 
         this.setStateWithUpdatedList(this.state.currentList);
 
+    }
+
+    addatIndex(addsongindex, title, artist, youTubeId) {
+
+        let song = ({title: title, artist: artist, youTubeId: youTubeId});
+
+        this.state.currentList.songs.splice(addsongindex, 0, song);
+
+        this.setStateWithUpdatedList(this.state.currentList);
     }
 
     // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
@@ -416,7 +441,7 @@ class App extends React.Component {
                     canUndo={canUndo}
                     canRedo={canRedo}
                     canClose={canClose}
-                    addCallback={this.add}
+                    addCallback={this.addAddSongTransaction}
                     
                     undoCallback={this.undo}
                     redoCallback={this.redo}
