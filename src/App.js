@@ -142,9 +142,9 @@ class App extends React.Component {
 
     edit(songid, title, artist, youTubeId) {
 
-        this.currentList.songs[songid].title = title;
-        this.currentList.songs[songid].artist = artist;
-        this.currentList.songs[songid].youTubeId = youTubeId;
+        this.state.currentList.songs[songid].title = title;
+        this.state.currentList.songs[songid].artist = artist;
+        this.state.currentList.songs[songid].youTubeId = youTubeId;
 
         this.setStateWithUpdatedList(this.state.currentList);
 
@@ -344,6 +344,17 @@ class App extends React.Component {
         });
     }
 
+    markSongForEditing = (keyPair) => {
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            songKeyPairMarkedForEditing : keyPair,
+            sessionData: prevState.sessionData
+        }), () => {
+            // PROMPT THE USER
+            this.showEditSongModal();
+        });
+    }
+
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
     showDeleteListModal() {
@@ -367,7 +378,7 @@ class App extends React.Component {
 
 
     showEditSongModal(){
-        let modal = document.getElementById("delete-song-modal");
+        let modal = document.getElementById("edit-song-modal");
         modal.classList.add("is-visible");
     }
     hideEditSongModal(){
@@ -416,6 +427,7 @@ class App extends React.Component {
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
                     deleteSongCallback={this.markSongForDeletion}
+                    EditSongModalCallback={this.markSongForEditing}
                      />
             
                 <Statusbar 
@@ -434,7 +446,7 @@ class App extends React.Component {
                 <EditSongModal
                     SONG = {song}
                     hideEditSongModalCallback={this.hideEditSongModal} 
-                    EditSongModalCallback={this.editMarkedSong} 
+                    EditSongCallback={this.editMarkedSong} 
                 />
             </>
         );

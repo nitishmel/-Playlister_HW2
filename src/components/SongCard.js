@@ -57,7 +57,8 @@ export default class SongCard extends React.Component {
 
     handleClick = (event) => {
         if (event.detail === 2) {
-            this.handleToggleEdit(event);
+            let num = this.getItemNum();
+            this.props.editCallback(num - 1);
         }
     }
 
