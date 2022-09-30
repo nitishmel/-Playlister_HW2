@@ -45,6 +45,7 @@ class App extends React.Component {
             songKeyPairMarkedForDeletion : null,
             songKeyPairMarkedForEditing : null,
             currentList : null,
+            ismodalopen : 0,
             sessionData : loadedSessionData
         }
     }
@@ -265,29 +266,35 @@ class App extends React.Component {
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     moveSong(start, end) {
-        let list = this.state.currentList;
 
-        // WE NEED TO UPDATE THE STATE FOR THE APP
-        start -= 1;
-        end -= 1;
-        if (start < end) {
-            let temp = list.songs[start];
-            for (let i = start; i < end; i++) {
-                list.songs[i] = list.songs[i + 1];
+        if (start !== end)
+        {
+            let list = this.state.currentList;
+
+            // WE NEED TO UPDATE THE STATE FOR THE APP
+            start -= 1;
+            end -= 1;
+            if (start < end) {
+                let temp = list.songs[start];
+                for (let i = start; i < end; i++) {
+                    list.songs[i] = list.songs[i + 1];
+                }
+                list.songs[end] = temp;
             }
-            list.songs[end] = temp;
-        }
-        else if (start > end) {
-            let temp = list.songs[start];
-            for (let i = start; i > end; i--) {
-                list.songs[i] = list.songs[i - 1];
+            else if (start > end) {
+                let temp = list.songs[start];
+                for (let i = start; i > end; i--) {
+                    list.songs[i] = list.songs[i - 1];
+                }
+                list.songs[end] = temp;
             }
-            list.songs[end] = temp;
+            this.setStateWithUpdatedList(list);
         }
-        this.setStateWithUpdatedList(list);
     }
 
     add = () => {
+
+        console.log("Add");
 
         let list = this.state.currentList;
 
@@ -310,8 +317,12 @@ class App extends React.Component {
 
     // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
     addMoveSongTransaction = (start, end) => {
-        let transaction = new MoveSong_Transaction(this, start, end);
-        this.tps.addTransaction(transaction);
+
+        if (start !== end)
+        {
+            let transaction = new MoveSong_Transaction(this, start, end);
+            this.tps.addTransaction(transaction);
+        }
     }
 
     addAddSongTransaction = () => {
@@ -382,39 +393,151 @@ class App extends React.Component {
 
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
-        let modal = document.getElementById("delete-list-modal");
-        modal.classList.add("is-visible");
+    showDeleteListModal = () => {
+
+        this.setState(prevState => ({
+            
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 1,
+            sessionData : prevState.sessionData
+
+        }), () => {
+
+            let modal = document.getElementById("delete-list-modal");
+            modal.classList.add("is-visible");
+        
+        });
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
-        let modal = document.getElementById("delete-list-modal");
-        modal.classList.remove("is-visible");
+    hideDeleteListModal = () => {
+        
+        this.setState(prevState => ({
+            
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 0,
+            sessionData : prevState.sessionData
+
+        }), () => {
+            
+            let modal = document.getElementById("delete-list-modal");
+            modal.classList.remove("is-visible");
+        
+        });
     }
-    showDeleteSongModal() {
-        let modal = document.getElementById("delete-song-modal");
-        modal.classList.add("is-visible");
+
+    showDeleteSongModal = () => {
+
+        this.setState(prevState => ({
+
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 1,
+            sessionData : prevState.sessionData
+
+        }), () => {
+            
+            let modal = document.getElementById("delete-song-modal");
+            modal.classList.add("is-visible");
+
+        });
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteSongModal() {
+    hideDeleteSongModal = () => {
+
+        this.setState(prevState => ({
+
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 0,
+            sessionData : prevState.sessionData
+
+        }), () => {
+
         let modal = document.getElementById("delete-song-modal");
         modal.classList.remove("is-visible");
+
+        });
     }
 
 
-    showEditSongModal(){
-        let modal = document.getElementById("edit-song-modal");
-        modal.classList.add("is-visible");
+    showEditSongModal = () => {
+
+        this.setState(prevState => ({
+
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 1,
+            sessionData : prevState.sessionData
+
+        }), () => {
+
+            let modal = document.getElementById("edit-song-modal");
+            modal.classList.add("is-visible");
+
+        });
     }
-    hideEditSongModal(){
+    hideEditSongModal = () => {
+
+        this.setState(prevState => ({
+
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            songKeyPairMarkedForDeletion : prevState.songKeyPairMarkedForDeletion,
+            songKeyPairMarkedForEditing : prevState.songKeyPairMarkedForEditing,
+            currentList : prevState.currentList,
+            ismodalopen : 0,
+            sessionData : prevState.sessionData
+
+        }), () => {
+
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
+    
+        });
     }
+
+    handleCtrl = (e) => {
+
+        if (e.keyCode === 90 && e.ctrlKey && !this.state.ismodalopen){
+                
+            this.undo()
+        }
+        if (e.keyCode === 89 && e.ctrlKey && !this.state.ismodalopen){
+            
+            this.redo()
+        }
+        
+    }
+
+    componentDidMount(){
+
+        document.addEventListener('keydown', this.handleCtrl);
+
+    }
+
+    componentWillUnmount(){
+
+        document.removeEventListener('keydown', this.handleCtrl);
+    }
+    
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
+
+        console.log("Hi");
 
         let song = null;
 
@@ -422,6 +545,7 @@ class App extends React.Component {
 
             song = this.state.currentList.songs[this.state.songKeyPairMarkedForDeletion];
         }
+        
 
         return (
             <>
