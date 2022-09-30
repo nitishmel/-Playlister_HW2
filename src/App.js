@@ -156,6 +156,9 @@ class App extends React.Component {
     }
     // THIS FUNCTION SPECIFICALLY DELETES THE CURRENT LIST
     deleteCurrentList = () => {
+
+        this.tps.clearAllTransactions();
+        
         if (this.state.currentList) {
             this.deleteList(this.state.currentList.key);
         }
@@ -227,6 +230,7 @@ class App extends React.Component {
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
         let newCurrentList = this.db.queryGetList(key);
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: newCurrentList,
@@ -234,11 +238,12 @@ class App extends React.Component {
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
-            this.tps.clearAllTransactions();
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: null,
@@ -246,7 +251,6 @@ class App extends React.Component {
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
-            this.tps.clearAllTransactions();
         });
     }
     setStateWithUpdatedList(list) {
@@ -509,13 +513,17 @@ class App extends React.Component {
 
     handleCtrl = (e) => {
 
+
+
         if (e.keyCode === 90 && e.ctrlKey && !this.state.ismodalopen){
                 
             this.undo()
+            this.forceUpdate()
         }
         if (e.keyCode === 89 && e.ctrlKey && !this.state.ismodalopen){
             
             this.redo()
+            this.forceUpdate()
         }
         
     }
@@ -532,12 +540,10 @@ class App extends React.Component {
     }
     
     render() {
-        let canAddSong = this.state.currentList !== null;
-        let canUndo = this.tps.hasTransactionToUndo();
-        let canRedo = this.tps.hasTransactionToRedo();
-        let canClose = this.state.currentList !== null;
-
-        console.log("Hi");
+        let canAddSong = this.state.currentList !== null && (!this.state.ismodalopen);
+        let canUndo = this.tps.hasTransactionToUndo() && this.state.currentList !== null && (!this.state.ismodalopen);
+        let canRedo = this.tps.hasTransactionToRedo() && this.state.currentList !== null && (!this.state.ismodalopen);
+        let canClose = this.state.currentList !== null && (!this.state.ismodalopen);
 
         let song = null;
 

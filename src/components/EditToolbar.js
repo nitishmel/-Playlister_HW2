@@ -20,6 +20,7 @@ export default class EditToolbar extends React.Component {
                 value="+" 
                 className={addSongClass}
                 onClick={addCallback}
+                disabled={!canAddSong}
             />
             <input 
                 type="button" 
@@ -27,6 +28,7 @@ export default class EditToolbar extends React.Component {
                 value="⟲" 
                 className={undoClass} 
                 onClick={undoCallback}
+                disabled={!canUndo}
             />
             <input 
                 type="button" 
@@ -34,6 +36,7 @@ export default class EditToolbar extends React.Component {
                 value="⟳" 
                 className={redoClass} 
                 onClick={redoCallback}
+                disabled={!canRedo}
             />
             <input 
                 type="button" 
@@ -41,6 +44,7 @@ export default class EditToolbar extends React.Component {
                 value="&#x2715;" 
                 className={closeClass} 
                 onClick={closeCallback}
+                disabled={!canClose}
             />
         </div>
         )

@@ -172,6 +172,13 @@ body {
 
 }
 
+.disabled{
+
+  background-color: #b8b808;
+  color: blue;
+  opacity: 1;
+}
+
 .toolbar-button{
 
   font-size:36pt;
